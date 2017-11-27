@@ -13,7 +13,7 @@ tr_async(numbers,
   filter(x => wait(400).then(() => x < 400)),
   filter(x => Math.floor(x/100) % 2 === 0)
 )
-.then(console.log) // [ 100, 200, 400 ]
+.then(console.log) // [ 51, 201, 251 ]
 
 
 tr_async(
