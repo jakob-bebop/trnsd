@@ -44,8 +44,9 @@ tr_async(
    used to the `.map( ... ).filter( ... )` style, it's just much easier to parse than
    nested `for` and `if` blocks
 2. you don't have to keep track of which of your map operations are async, and manually 
-   add `Promise.all` around the results of those. The `tr_async` function handles both async and
-   "normal" functions in both `map` and `filter`
-3. more code can run in parallel, compared to waiting for _all_ the Promises
-   to resolve before the the next stage, as would be the case with `Promise.all`
+   add `Promise.all` around the results of those. The `tr_async` function handles both 
+   async and "normal" functions in both `map` and `filter`
+3. more code can run in parallel, compared to using `Promise.all`, which would indeed 
+   waiting for _all_ the Promises to resolve before proceeding to the the next map/filter 
+   stage. 
 4. no intermediate lists are created, which means it will run faster in some cases
