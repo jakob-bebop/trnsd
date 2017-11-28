@@ -1,4 +1,4 @@
-## Transducer pattern can improve `map` and `filter`
+## Transducer pattern can improve _map_ and _filter_
 
 ### Improved handling of async functions
 
@@ -28,6 +28,8 @@ Promise.all(result).then(
 Using a simple transduce pattern we can write this instead:
 
 ```javascript
+const { map, filter, tr_async } = require('trnsd')
+
 tr_async(
   array_of_ids,
 
