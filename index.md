@@ -15,7 +15,7 @@ const result = array_of_ids.map(
 
 the result will be an array of Promises, so you'll need to continue similar to
 
-```
+```javascript
 Promise.all(result).then(
   user_data => user_data.filter(reject_unneeded_users) 
 )
@@ -27,7 +27,7 @@ Promise.all(result).then(
 
 Using a simple transduce pattern we can write this instead:
 
-```
+```javascript
 tr_async(
   array_of_ids,
 
