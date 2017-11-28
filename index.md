@@ -38,7 +38,7 @@ tr_async(
 .then(finally_do_something)
 ```
 
-### Why is this beneficial?
+### Why is this cool?
 
 1. it's easy to read and to reason about. This may me a matter of preference, but being 
    used to the `.map( ... ).filter( ... )` style, it's just much easier to parse than
