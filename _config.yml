@@ -1,1 +1,5 @@
 theme: jekyll-theme-leap-day
+
+navbar:
+  enabled: true
+  
