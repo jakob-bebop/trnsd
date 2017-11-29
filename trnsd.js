@@ -14,10 +14,10 @@ const map = f => r => (a, x) => r(a, f(x))
 
 , resolve = x => (x instanceof Promise? x: Promise.resolve(x))
 , r_async = r => (pa, px) => resolve(pa).then(a => resolve(px).then(x => r(a, x)))
-, interleave = (xs, y) => xs.slice(1).reduce((xyxs, x) => xyxs.concat(y, x), [xs[0]])
+, interleave = (xs, y) => xs.slice(1).reduce((xyxs, x) => xyxs.concat(y, x), [y, xs[0]])
 , trnsd_async = (xs, a, r, ...fs) => trnsd(xs, a, r_async(r), ...interleave(fs, r_async))
 , tr_async = (xs, ...fs) => trnsd_async(xs, [], r_array, ...fs)
 
 module.exports = {
-  map, filter, trnsd, tr_array, trnsd_async, tr_async
+  map, filter, trnsd, tr_array, trnsd_async, tr_async,r_async,r_array
 }
