@@ -132,7 +132,10 @@ mapping inside, and simply stick `tx_async` between that and `array_reducer`:
 ```es6
 const map_user = map(x => get_user(x))
 
-numpers.reduce(map_user(tx_async(reduce_array)), [])
+numpers.reduce(
+  map_user(tx_async(reduce_array)), 
+  []
+)
 .then(
   array_of_users => do_something_with(array_of_users)
 ) 
@@ -157,15 +160,25 @@ is turned into
 
 ```es6
 input_array.reduce(
-  tx_async(tx1(tx_async(tx2(tx_async(tx3(tx_async(array_reduce))))))),
+  tx_async(tx1(
+    tx_async(tx2(
+      tx_async(tx3(
+        tx_async(array_reduce))))))),
   []
 )
 ```
 
-The reason for the first `tr_async` is error handling; an error
-thrown anywhere in the chain, in synchronous or asynchronous context,
-is passed through the promise chain and can be handled with `.catch`
 
 The transformation is done using a _compose_ function; an explanation of 
 this works can be found in any other transducer tutorial, or in the very nice 
 Egghead tutorial. 
+
+### But really?
+
+Yes, error handling...
+
+The reason for the first `tr_async` is to make sure that an error
+thrown in the very first function is handled in a `.then` context.
+That way, any error thrown in the chain, in a synchronous _or_ 
+an asynchronous function, is passed through the promise chain and 
+can be handled with `.catch`
