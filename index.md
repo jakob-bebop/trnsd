@@ -1,3 +1,8 @@
+---
+title: About
+navigation_weight: 1
+---
+
 ### Transducer pattern can improve handling of async functions _map_ and _filter_!
 
 Suppose yo have some db connection that fetches user data asynchronously 
