@@ -157,11 +157,15 @@ is turned into
 
 ```es6
 input_array.reduce(
-  tx1(tx_async(tx2(tx_async(tx3(tx_async(array_reduce)))))),
+  tx_async(tx1(tx_async(tx2(tx_async(tx3(tx_async(array_reduce))))))),
   []
 )
 ```
 
-by using a _compose_ function. An explanation how this works can
-be found in any other transducer tutorial, or in the very nice 
+The reason for the first `tr_async` is error handling; an error
+thrown anywhere in the chain, in synchronous or asynchronous context,
+is passed through the promise chain and can be handled with `.catch`
+
+The transformation is done using a _compose_ function; an explanation of 
+this works can be found in any other transducer tutorial, or in the very nice 
 Egghead tutorial. 
