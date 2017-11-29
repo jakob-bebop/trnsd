@@ -34,24 +34,21 @@ Apart from calling `double`, all that `map_double` does is to add something to t
 array. This can be factored out:
 
 ```es6
-const array_reduce = (a,x) => {
-  a.push(f(x))
+const array_reduce = (a, x) => {
+  a.push(x)
   return a
 }
 ```
 
-and we can define `map` as
+and we can define `map_double` as a transducer:
 ```es6
-const map = f => r => (a, x) => r(a, f(x))
+const tx_map_double => r => (a, x) => r(a, f(x))
 ```
 
-and then `map(double)(array_reduce)` will do just what `map_f` did above.
-
-`map(double)` is a transducer: We pass the array reducer into it, and then its 
-ready to 'reduce' into an array:
+and then `tx_map_double(array_reduce)` will do just what `map_double` did above:
 
 ```es6
-numbers.reduce(map(double)(array_reduce), [])
+numbers.reduce(map_double(array_reduce), [])
 ```
 
 Notice how the empy array passed as the last argument to `reduce` is linked with the 
@@ -61,5 +58,5 @@ Notice how the empy array passed as the last argument to `reduce` is linked with
 What about mapping a function that makes some external call returns a Promise?
 
 ```es6
-const get_user = x => fetch(`https://some.api/user/x`)
+const get_user = x => fetch(`https://some.api/user/${x}`)
 ```
