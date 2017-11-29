@@ -1,6 +1,6 @@
 theme: jekyll-theme-leap-day
 
-navbar:
-  pages: 
-    enabled: true
+#navbar:
+#  pages: 
+#    enabled: true
   
