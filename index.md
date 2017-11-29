@@ -55,3 +55,5 @@ tr_async(
    waiting for _all_ the Promises to resolve before proceeding to the the next map/filter 
    stage. 
 4. no intermediate lists are created, which means it will run faster in some cases
+
+### [How does it work](async)
