@@ -1,3 +1,8 @@
+---
+title: Async
+navigation_weight: 2
+---
+
 ## _map_ vs _reduce_
 
 A transducer is a function that takes a single argument. Both the argument and 
