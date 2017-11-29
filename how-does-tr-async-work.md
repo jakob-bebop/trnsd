@@ -1,7 +1,7 @@
 ---
 title: Async
-navigation_weight: 2
-permalink: /async-trnsd
+layout: default
+permalink: /async
 ---
 
 ## _map_ vs _reduce_
