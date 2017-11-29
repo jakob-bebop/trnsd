@@ -1,7 +1,9 @@
+
 ---
 title: Async
 navigation_weight: 2
 permalink: /async-trnsd
+layouy: page
 
 ---
 
