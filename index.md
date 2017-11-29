@@ -1,6 +1,6 @@
 ---
 title: About
-navigation_weight: 1
+layout: default
 ---
 
 ### Transducer pattern can improve handling of async functions _map_ and _filter_!
