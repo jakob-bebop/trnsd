@@ -102,7 +102,7 @@ const tx_map_get_user = r => (a, x) => {
 ```
 
 Now `reduce` returns the last return value from the function, so 
-in this case it'll return a promise:
+in this case it'll return a Promise:
 
 ```es6
 numbers.reduce(
@@ -113,11 +113,11 @@ numbers.reduce(
 )
 ```
 
-The only thing missing now is to generalize the Promise handling into 
-a transducer:
+The final trick is to generalize the Promise handling into 
+a generic transducer:
 
 ```
-const tx_promise = r => (a, x) => {
+const tx_async = r => (a, x) => {
   return wrap(a).then(
     real_a => wrap(x).then(
       real_x => r(real_a, real_x)
@@ -126,14 +126,42 @@ const tx_promise = r => (a, x) => {
 }
 ```
 
-The magic happens now: We can use our map constructor from before with the async
-mapping:
+The magic happens now: We can use the map constructor from before with the async
+mapping inside, and simply stick `tx_async` between that and `array_reducer`:
 
 ```es6
 const map_user = map(x => get_user(x))
 
-numpers.reduce(map_user(tx_promise(reduce_array)), [])
+numpers.reduce(map_user(tx_async(reduce_array)), [])
 .then(
   array_of_users => do_something_with(array_of_users)
 ) 
 ```
+
+### And that's it!
+
+Litterally, everything `tr_async` does is supplying `array_reduce`, the empty array
+and `tx_async`; this
+
+```es6
+tr_async(
+  input_array,
+
+  tx1,
+  tx2,
+  tx3
+)
+```
+
+is turned into
+
+```es6
+input_array.reduce(
+  tx1(tx_async(tx2(tx_async(tx3(tx_async(array_reduce)))))),
+  []
+)
+```
+
+by using a _compose_ function. An explanation how this works can
+be found in any other transducer tutorial, or in the very nice 
+Egghead tutorial. 
