@@ -3,8 +3,7 @@
 title: Async
 navigation_weight: 2
 permalink: /async-trnsd
-layouy: page
-
+layout: page
 ---
 
 ## _map_ vs _reduce_
