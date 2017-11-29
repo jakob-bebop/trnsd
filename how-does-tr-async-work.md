@@ -1,6 +1,8 @@
 ---
 title: Async
 navigation_weight: 2
+permalink: /async-trnsd
+
 ---
 
 ## _map_ vs _reduce_
