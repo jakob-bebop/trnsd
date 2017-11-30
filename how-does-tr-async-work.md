@@ -24,7 +24,7 @@ array `a`. Using it to _reduce_ an array of numbers
 
 ```es6
 const numbers = [1, 2, 3, 4]
-numbers.reduce(double, [])
+numbers.reduce(map_double, [])
 ```
 
 is exacly the same as doing `numbers.map(double)`.
