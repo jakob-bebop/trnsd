@@ -9,7 +9,7 @@ const numbers = [
 
 tr_async(
   numbers,
-  map(x => x+1-1),
+//  map(x => x+1-1),
   map(x => {
     return wait(x).then(
       () => {
