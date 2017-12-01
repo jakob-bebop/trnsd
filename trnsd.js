@@ -1,6 +1,6 @@
 const map = f => r => (a, x) => r(a, f(x))
-//, filter = f => r => (a, x) //=> f(x)? r(a, x): a
-
+, filter = f => r => (a, x) => f(x)? r(a, x): a
+/*
 , filter = f => r => (a, x)=> {
      const b = f(x);
     if (b instanceof Promise)
@@ -8,7 +8,7 @@ const map = f => r => (a, x) => r(a, f(x))
     else
       return b? r(a, x): a;
   }
-
+*/
 , compose = (...fs) => fs.reverse().reduce((c, f) => f(c))
 , trnsd = (xs, a, r, ...fs) => xs.reduce(compose(...fs, r), a)
 
@@ -16,6 +16,8 @@ const map = f => r => (a, x) => r(a, f(x))
 , tr_array = (xs, ...fs) => trnsd(xs, [], r_array, ...fs)
 
 , resolve = x => (x instanceof Promise? x: Promise.resolve(x))
+
+, r_intermediate = r => (pa, px) => resolve(px).then(x => r(pa, x))
 , r_async = r => (pa, px) => resolve(pa).then(a => resolve(px).then(x => r(a, x)))
 , interleave = (xs, y) => xs.slice(1).reduce((xyxs, x) => xyxs.concat(y, x), [xs[0]])
 /*
@@ -37,7 +39,7 @@ e => {
 }
 */
 , trnsd_async = (xs, a, r, ...fs) => {
-  const reducer = compose(...interleave([...fs, r], r_async))
+  const reducer = compose(...interleave(fs, r_intermediate), r_async, r_array)
   let acc = a, too_late = false
 
 return new Promise((resolve, reject) => {
