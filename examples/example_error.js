@@ -1,4 +1,4 @@
-const { tr_async, map, filter } = require('../trnsd')
+const { tr_async, tr_par, map, filter } = require('../trnsd')
 const { wait } = require('./wait')
 
 const numbers = [
@@ -7,7 +7,7 @@ const numbers = [
 , 300
 ]
 
-tr_async(
+tr_par(
   numbers,
 //  map(x => x+1-1),
   map(x => {
