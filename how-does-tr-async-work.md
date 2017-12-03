@@ -31,9 +31,8 @@ is exacly the same as doing `numbers.map(double)`.
 
 ## The transducer trick
 Now `map_double` does two different things. The first is calling `double`, 
-the second is adding the resut to the
-array. 
-The array stuff can be factored out into a seperate function:
+the second is adding the resut to the array. 
+The array stuff can be factored out into a seperate reducer function:
 
 ```es6
 const array_reduce = (a, x) => {
@@ -51,10 +50,18 @@ and then `tx_map_double(array_reduce)` will do just what `map_double` did above:
 
 ```es6
 numbers.reduce(map_double(array_reduce), [])
+// same result again
 ```
 
-Notice how the empy array passed as the last argument to `reduce` is linked with the 
-`array_reduce` function.
+## Accumulator and end reducer
+
+The empty array passed as the last argument to `reduce` is called the 
+_accumulator_ because its purpose is to collect &ndash; accumulate &ndash;
+the results. 
+The `array_reduce` is passed into the transducers as and _end reducer_, a function that handles the detailsof adding the result to the accumulator, 
+and the transducer (or transducers, if more are chained together) don't 
+care about what the accumulator is, as long as the end reducer knows how 
+to handle it.
 
 ## Transducer constructor
 
@@ -65,11 +72,13 @@ as a _transducer constructor_:
 const map = f => r => (a, x) => r(a, f(x))
 
 numbers.reduce(map(double)(array_reduce), [])
+// same thing again...
 ```
 
 
 ## Promise!
-What about mapping a function that makes some external call returns a Promise?
+What about mapping a function that makes some external call and returns 
+a Promise?
 
 ```es6
 const get_user = x => fetch(`https://some.api/user/${x}`)
@@ -85,21 +94,18 @@ const tx_map_get_user = r => (a, x) => {
 }
 ```
 
-the only catch is that now the whole thing returns a _Promise_ of the
-accumulator, rather than the accumulator itself. And since `reduce` passes
-the return value of the function as the first argument to the function
-next time it calls it, we have to be able to treat `a` as _either_ a promise 
-_or_ a value. One way to do this is to wrap `a` in a Promise if it isn't
-already:
+Now the whole thing returns a _Promise_ of the accumulator, 
+rather than the accumulator itself. And since `reduce` will pass
+that value as the first argument to the function
+next time it calls it, our end reducer must able to treat `a` as _either_ a promise _or_ a value. One way to do this is to wrap `a` in a Promise if it 
+isn't one already. The function to do this will be called `resolve`, and
+we'll transform the end reducer using a new transducer:
 
 ```es6
-const wrap a => a instanceof Promise? a: Promise.resolve(a)
-const tx_map_get_user = r => (a, x) => {
-  return wrap(a).then(
-    real a => get_user(x).then(
-      user => r(a, user)
-    )
-  )
+const resolve a => a instanceof Promise? a: Promise.resolve(a)
+
+const tx_end_async = r => (a, x) => {
+  return resolve(a).then(r(a, x))
 }
 ```
 
@@ -108,7 +114,7 @@ in this case it'll return a Promise:
 
 ```es6
 numbers.reduce(
-  tx_map_get_user(array_reducer),
+  tx_map_get_user(tx_end_async(array_reducer)),
   []
 ).then(
   array_of_users => do_something_with(array_of_users)
@@ -134,7 +140,7 @@ mapping inside, and simply stick `tx_async` between that and `array_reducer`:
 ```es6
 const map_user = map(x => get_user(x))
 
-numpers.reduce(
+numbers.reduce(
   map_user(tx_async(reduce_array)), 
   []
 )
@@ -183,4 +189,22 @@ The reason for the first `tr_async` is to make sure that an error
 thrown in the very first function is handled in a `.then` context.
 That way, any error thrown in the chain, in a synchronous _or_ 
 an asynchronous function, is passed through the promise chain and 
-can be handled with `.catch`
+can be handled with `.catch`.
+
+A side effect of this setup is that processing of the input elements
+happens sequentially (processing of `numbers[1]` only starts after 
+`numbers[0]` has been processed and added to the accumulator)
+
+### The _filter_ constructor and parallel execution
+OK of course there are a couple of details other than those mentioned here;
+the source code is in `trnsd.js` on github. The most important parts not 
+explained above are:
+
+ * the implementation of the _filter_ transducer constructor. A predicate is
+   allowed to return a promise, so `resolve` defined above
+   is used again to access the result
+ * the implementation of the parallel interface `tr_par` is slightly more
+   involved because of error handling, because it calls all the reducers
+   at once, so errors may happen synchronously as well as asynchronously.
+   Also, in case an error has been thrown, another one could happen
+   later; such 'late-coming errors' have to be handled as well.
