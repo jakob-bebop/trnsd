@@ -62,7 +62,7 @@ tr_async(
 
 ### In parallel
 use `tr_par` instead of `tr_async`. Parallel can be nice for speed, but
-beware: you only get one call to your `.catch` &mdash; if errors happen after 
+error handling can be tricky: Similar to using `Promise.all`, your `.catch` handler is called once &mdash; if errors happen after 
 the first one, they are ignored!
 
 
