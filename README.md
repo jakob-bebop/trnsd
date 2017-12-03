@@ -9,8 +9,9 @@ operations that we know and love.
     example in various blog posts, as well as [1])
  2. making it more convenient to use async functions in map and filter. This means that you
     don't need to wrap your map result in `Promise.all`. The goal in this case is to improve 
-    readability rather than speed (The approach taken here is to _wait for every promise_, so 
-    items will be processed sequentially, rather than in parallel as `Promise.all` does)
+    readability rather than speed (Two approaches are possible; either to _wait for every promise_, so 
+    items will be processed sequentially. The other is to start processing every
+    input alement at once.)
  
 ## Transducer constructors
  
@@ -35,6 +36,8 @@ const result = tr_array(
 
 ## Async interface
 
+### In sequence
+
 ```javascript
 const { tr_async, map, filter } = require('../trnsd')
 const { wait } = require('./wait')
@@ -50,10 +53,13 @@ tr_async(
 .then(console.log) // [ 51, 201, 251 ]
 ```
 
+### In parallel
+use `tr_par` instead of `tr_async`.
+
 **Note that**
 * Functions passed to `map` and `filter` may return a value or a Promise... But:
 * _if_ Promises are involved, use `tr_async` or `trnsd_async`
-* `tr_async` always returns a Promise
+* `tr_async` and `tr_par` always return a Promise
 * `tr_array` dies in flames if a Promise is encountered. (`UnhandledPromiseRejectionWarning`.) 
 
 ## `trnsd` and `trnsd_async` interface
