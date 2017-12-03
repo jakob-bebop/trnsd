@@ -8,12 +8,12 @@ permalink: /async
 
 A transducer is a function that takes a single argument. Both the argument and 
 the returned value are _reducer functions_. This means that they are functions
-suited for pasśing to `reduce`.
+suited for passing to `reduce`.
 
 ```es6
 const double = x => x*2
 
-const map_double = ( a, x ) => {
+const map_double = (a, x) => {
   a.push(double(x))
   return a
 }
@@ -30,8 +30,10 @@ numbers.reduce(map_double, [])
 is exacly the same as doing `numbers.map(double)`.
 
 ## The transducer trick
-Apart from calling `double`, all that `map_double` does is to add something to the
-array. This can be factored out:
+Now `map_double` does two different things. The first is calling `double`, 
+the second is adding the resut to the
+array. 
+The array stuff can be factored out into a seperate function:
 
 ```es6
 const array_reduce = (a, x) => {
@@ -40,7 +42,7 @@ const array_reduce = (a, x) => {
 }
 ```
 
-and we can define `map_double` as a transducer:
+and we can define `map_double` as a _transducer_:
 ```es6
 const tx_map_double = r => (a, x) => r(a, double(x))
 ```
