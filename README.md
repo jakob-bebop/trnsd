@@ -17,8 +17,12 @@ operations that we know and love.
  
 There are two constructors `map` and `filter` nothing special here
 
-## Easy interface
- 
+## Basic interface
+
+The basic interface is a function `tr_array` which expects an array (or another type of iterable object) of
+input values followed by any number of _maps_ or _filters_.
+It traverses (hence the `tr_` prefix) the input collection, passes each element through the provided stages, and returns a new array with the results.
+
 ```javascript
  const { tr_array, map, filter } = require('../trnsd')
 , numbers = [1, 2, 4, 5, 6, 7, 8, 9, 10]
@@ -35,6 +39,9 @@ const result = tr_array(
 ```
 
 ## Async interface
+
+There are two variants; both return a _Promise_ that resolves to a new 
+array with the results.
 
 ### In sequence
 
@@ -54,7 +61,10 @@ tr_async(
 ```
 
 ### In parallel
-use `tr_par` instead of `tr_async`.
+use `tr_par` instead of `tr_async`. Parallel can be nice for speed, but
+beware: you only get one call to your `.catch` &mdash; if errors happen after 
+the first one, they are ignored!
+
 
 **Note that**
 * Functions passed to `map` and `filter` may return a value or a Promise... But:
@@ -62,7 +72,7 @@ use `tr_par` instead of `tr_async`.
 * `tr_async` and `tr_par` always return a Promise
 * `tr_array` dies in flames if a Promise is encountered. (`UnhandledPromiseRejectionWarning`.) 
 
-## `trnsd` and `trnsd_async` interface
+## `trnsd`, `trnsd_async` and `trnsd_par` interface
 these are proper "transduce" type functions, see `examples/example_custom.js`
 
 ## References
