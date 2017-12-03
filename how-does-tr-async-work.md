@@ -96,7 +96,7 @@ const tx_map_get_user = r => (a, x) => {
 
 Now the whole thing returns a _Promise_ of the accumulator, 
 rather than the accumulator itself. And since `reduce` will pass
-that value as the first argument to the function
+that value as the first argument to the reducer
 next time it calls it, our end reducer must able to treat `a` as _either_ a promise _or_ a value. One way to do this is to wrap `a` in a Promise if it 
 isn't one already. The function to do this will be called `resolve`, and
 we'll transform the end reducer using a new transducer:
@@ -191,9 +191,11 @@ That way, any error thrown in the chain, in a synchronous _or_
 an asynchronous function, is passed through the promise chain and 
 can be handled with `.catch`.
 
-A side effect of this setup is that processing of the input elements
+A consequence of this setup is that processing of the input elements
 happens sequentially (processing of `numbers[1]` only starts after 
-`numbers[0]` has been processed and added to the accumulator)
+`numbers[0]` has been processed and added to the accumulator.) 
+
+Parralel execution is possible with `tr_par`.
 
 ### The _filter_ constructor and parallel execution
 OK of course there are a couple of details other than those mentioned here;
