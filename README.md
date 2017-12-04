@@ -21,7 +21,8 @@ There are two constructors `map` and `filter` nothing special here
 
 The basic interface is a function `tr_array` which expects an array (or another type of iterable object) of
 input values followed by any number of _maps_ or _filters_.
-It traverses (hence the `tr_` prefix) the input collection, passes each element through the provided stages, and returns a new array with the results.
+It traverses (hence the `tr_` prefix) the input collection, passes each element through the provided 
+stages, and returns a new array with the results.
 
 ```javascript
  const { tr_array, map, filter } = require('../trnsd')
@@ -62,7 +63,8 @@ tr_async(
 
 ### In parallel
 use `tr_par` instead of `tr_async`. Parallel can be nice for speed, but
-error handling can be tricky: Similar to using `Promise.all`, your `.catch` handler is called once &mdash; if errors happen after 
+error handling can be tricky: Similar to using `Promise.all`, your `.catch` handler is called 
+at most once &mdash; if errors happen after 
 the first one, they are ignored!
 
 
