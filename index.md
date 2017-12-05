@@ -3,18 +3,59 @@ title: About
 layout: default
 ---
 
-### Transducer pattern can improve handling of async functions _map_ and _filter_!
+## Improved handling of async functions in _map_ and _filter_
 
-Suppose yo have some db connection that fetches user data asynchronously 
-by returning a Promise.
+Processing data can sometimes be done using `map` and `filter` functions
+with a plain javascrip array:
 
 ```javascript
-const array_of_ids, db_connection
-
-const result = array_of_ids.map(
-  id => db_connection.getUser(id)
+some_data.map(
+  x => create_some_object(x)
+).filter(
+  obj => check_something(obj)
 )
 ```
+
+### Transducers for performance and flexibility
+Both _map_ and _filter_ create a new array to store their results.
+Using _transducers_, the creation of intermediate arrays
+can be avoided, offering improved performance. 
+Example from [transducers.js](http://jlongster.com/Transducers.js--A-JavaScript-Library-for-Transformation-of-Data). Note that here, `map` and `filter` aren't
+methods on the input array, but rather functions imported from _transducers.js_
+
+```javascript
+into([],
+   compose(
+     map(x => x * 2),
+     filter(x => x > 5)
+   ),
+   some_data
+);
+// -> [ 6, 8 ]
+```
+
+### _trnsd_: Transducers for async
+
+Suppose yo have some db connection that fetches user data asynchronously 
+by returning a Promise (think mongodb), and another function that checks if a file exists, also returning a Promise.
+
+With _trnsd_ you can do this:
+
+```javascript
+const { tr_async, map, filter } = require('./trnsd.js')
+
+tr_async(
+  some_data,
+  map(id => db_connection.getUser(id)),
+  filter(user => file_exists(user.image))
+)
+.then(
+  users_with_image => {
+    // display images or whatever
+  }
+)
+```
+---------------------
 
 the result will be an array of Promises, so you will continue similar to
 
