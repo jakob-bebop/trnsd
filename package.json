@@ -2,7 +2,7 @@
   "name": "trnsd",
   "version": "1.0.0",
   "description": "Map and filter that handle async functions, sequentially or in parallel.",
-  "main": "index.js",
+  "main": "trnsd.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,5 +23,5 @@
   "bugs": {
     "url": "https://github.com/jakob-bebop/trnsd/issues"
   },
-  "homepage": "https://github.com/jakob-bebop/trnsd#readme"
+  "homepage": "https://jakob-bebop.github.com/trnsd"
 }
