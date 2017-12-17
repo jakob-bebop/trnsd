@@ -71,8 +71,8 @@ tr_par(
 )
 ```
 
-Presumably, this could give good performance if `create_some_object` and 
-`check_something` involved API calls or similar.
+Presumably, this means great performance if `create_some_object` and 
+`check_something` involve API calls or similar OI-bound operations.
 
 ## Error handling
 Both `tr_async` and `tr_par` return a Promise, and errors are handled in a 
