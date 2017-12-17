@@ -16,6 +16,62 @@ some_data.map(
 )
 ```
 
+***However*** if `create_some_object` and/or `check_something` return a Promise, the above will
+**not** work. This is what *trnsd* handles. The following will work whether both functions,
+one of them, or none, are async:
+
+```javascript
+import { tr_async, map, filter } from 'trnsd'
+
+tr_async(
+  some_data,
+  map(
+    x => create_some_object(x)
+  ),
+  filter(
+    obj => check_something(obj)
+  )
+)
+.then(
+  results => look_at(results)
+)
+```
+
+## Parallel or sequential execution
+In the above example, will happen sequentially. 
+This means that processing of `some_data[1]` is not started
+until processing of `some_data[0]` is finished, and any resulting promises have
+resolved.
+
+In a little more detail, `create_some_object(some_data[1])` is called after the 
+promise returned by `create_some_object(some_data[0]).then(obj => check_something(obj))`
+has resolved.
+
+Another strategy would be to kick off `create_some_object(some_data[0])`, 
+`create_some_object(some_data[1])` etc. right away. This is implemented in 
+`tr_par`, which has exactly the same interface as `tr_async`:
+
+```javascript
+import { tr_par, map, filter } from 'trnsd'
+
+tr_par(
+  some_data,
+  map(
+    x => create_some_object(x)
+  ),
+  filter(
+    obj => check_something(obj)
+  )
+)
+.then(
+  results => look_at(results)
+)
+```
+
+Presumably, this could give good performance if `create_some_object` and 
+`check_something` involved API calls or similar.
+
+
 ### Transducers for performance and flexibility
 Both _map_ and _filter_ create a new array to store their results.
 Using _transducers_, the creation of intermediate arrays
