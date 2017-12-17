@@ -1,0 +1,27 @@
+{
+  "name": "trnsd",
+  "version": "1.0.0",
+  "description": "Map and filter that handle async functions, sequentially or in parallel.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jakob-bebop/trnsd.git"
+  },
+  "keywords": [
+    "transducers",
+    "functional",
+    "programming",
+    "map",
+    "filter",
+    "promise"
+  ],
+  "author": "Jakob Lund",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jakob-bebop/trnsd/issues"
+  },
+  "homepage": "https://github.com/jakob-bebop/trnsd#readme"
+}
