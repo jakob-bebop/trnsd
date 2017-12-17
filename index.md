@@ -72,7 +72,7 @@ tr_par(
 ```
 
 Presumably, this means great performance if `create_some_object` and 
-`check_something` involve API calls or similar OI-bound operations.
+`check_something` involve API calls or similar IO-bound operations.
 
 ## Error handling
 Both `tr_async` and `tr_par` return a Promise, and errors are handled in a 
