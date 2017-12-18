@@ -1,4 +1,4 @@
-const { tr_async, map, filter } = require('../trnsd')
+const { tr_async, map, filter } = require('trnsd')
 const { wait } = require('./wait')
 , numbers = [1, 2, 4, 5, 6, 7, 8, 9, 10]
 

@@ -1,4 +1,4 @@
-const { tr_array, map, filter } = require('../trnsd')
+const { tr_array, map, filter } = require('trnsd')
 , numbers = [1, 2, 4, 5, 6, 7, 8, 9, 10]
 
 // Run the numbers through some maps and filters.

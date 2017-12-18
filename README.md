@@ -25,7 +25,7 @@ It traverses (hence the `tr_` prefix) the input collection, passes each element 
 stages, and returns a new array with the results.
 
 ```javascript
- const { tr_array, map, filter } = require('../trnsd')
+ const { tr_array, map, filter } = require('trnsd')
 , numbers = [1, 2, 4, 5, 6, 7, 8, 9, 10]
 
 const result = tr_array(
@@ -47,7 +47,7 @@ array with the results.
 ### In sequence
 
 ```javascript
-const { tr_async, map, filter } = require('../trnsd')
+const { tr_async, map, filter } = require('trnsd')
 const { wait } = require('./wait')
 , numbers = [1, 2, 4, 5, 6, 7, 8, 9, 10]
 
