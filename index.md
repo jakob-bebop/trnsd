@@ -87,7 +87,7 @@ potentially be tricky.
 
 ## Why is this cool?
 
-**Readability.*** Code written with `map` and `filter` is easy to read and to reason about. 
+**Readability.** Code written with `map` and `filter` is easy to read and to reason about. 
 This may me a matter of preference, but when you get used to this style, it's just 
 much easier to parse than nested `for` and `if` blocks
 
