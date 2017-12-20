@@ -50,7 +50,7 @@ In a little more detail, `create_some_object(some_data[1])` is called after the
 promise returned by `create_some_object(some_data[0]).then(obj => check_something(obj))`
 has resolved.
 
-## Parallel or sequential execution
+## Parallel execution
 A different strategy would be to kick off `create_some_object(some_data[0])`, 
 `create_some_object(some_data[1])` etc. right away. 
 
