@@ -101,7 +101,7 @@ much easier to parse than nested `for` and `if` blocks
   waiting for _all_ the Promises to resolve before proceeding to the the next map/filter 
   stage. 
 
-##How does it work
+## How does it work
 _trnsd_ is an application of the transducer pattern, with a bit of extra Promise handling.
 The only most nearly complicated thing is the error handling in the parallel execution case.
 
