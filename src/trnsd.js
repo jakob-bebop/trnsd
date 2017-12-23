@@ -1,7 +1,7 @@
 const map = f => r => (a, x) => r(a, f(x))
 , filter = f => r => (a, x) => {
     const b = f(x);
-    if (Promise.resolve(b) === b) // true if b _is_ a promise
+    if (isFunction(b.then)) // is b a Promise?
       return b.then(b => b? r(a, x): a);
     else
       return b? r(a, x): a;
@@ -52,6 +52,10 @@ const map = f => r => (a, x) => r(a, f(x))
     )
   }
 , tr_par = (xs, ...fs) => trnsd_par(xs, [], r_array, ...fs)
+
+function isFunction(obj) {
+  return !!(obj && obj.constructor && obj.call && obj.apply);
+};
 
 module.exports = {
   map, filter,
