@@ -1,7 +1,7 @@
 const map = f => r => (a, x) => r(a, f(x))
 , filter = f => r => (a, x) => {
     const b = f(x);
-    if (b instanceof Promise)
+    if (Promise.resolve(b) === b) // true if b _is_ a promise
       return b.then(b => b? r(a, x): a);
     else
       return b? r(a, x): a;
@@ -12,11 +12,10 @@ const map = f => r => (a, x) => r(a, f(x))
 , r_array = (a, x) => {a.push(x); return a}
 , tr_array = (xs, ...fs) => trnsd(xs, [], r_array, ...fs)
 
-, resolve = x => (x instanceof Promise? x: Promise.resolve(x))
 
-, tx_intermediate = r => (pa, px) => resolve(px).then(x => r(pa, x))
-, tx_async = r => (pa, px) => resolve(pa).then(
-    a => resolve(px).then(x => r(a, x))
+, tx_intermediate = r => (pa, px) => Promise.resolve(px).then(x => r(pa, x))
+, tx_async = r => (pa, px) => Promise.resolve(pa).then(
+    a => Promise.resolve(px).then(x => r(a, x))
   )
 
 , interleave = (xs, y) => xs.slice(1).reduce(
