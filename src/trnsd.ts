@@ -1,13 +1,23 @@
-const map = f => r => (a, x) => r(a, f(x))
-, filter = f => r => (a, x) => {
+import compose from './compose'
+
+type Reducer<C, B> = (c: C, b: B) => C
+type Transform<A, B> = (a: A) => B
+type Predicate<A> = (a: A) => boolean | Promise<boolean>
+
+export function map<A, B, C>(f: Transform<A, B>){
+  return (r: Reducer<C, B>) => (a: C, x: A) => r(a, f(x))
+}
+
+export function filter<C, A>(f: Predicate<A>){
+  return (r: Reducer<C, A>) => (a: C, x: A) => {
     const b = f(x);
-    if (b && isFunction(b.then)) // is b a Promise?
+    if (isPromise(b))
       return b.then(b => b? r(a, x): a);
     else
       return b? r(a, x): a;
   }
-, compose = (...fs) => fs.reverse().reduce((c, f) => f(c))
-, trnsd = (xs, a, r, ...fs) => xs.reduce(compose(...fs, r), a)
+}
+const trnsd = (xs, a, r, ...fs) => xs.reduce(compose(...fs, r), a)
 
 , r_array = (a, x) => {a.push(x); return a}
 , tr_array = (xs, ...fs) => trnsd(xs, [], r_array, ...fs)
@@ -53,7 +63,11 @@ const map = f => r => (a, x) => r(a, f(x))
   }
 , tr_par = (xs, ...fs) => trnsd_par(xs, [], r_array, ...fs)
 
-function isFunction(obj) {
+function isPromise<T>(p: any): p is Promise<T> {
+  return p && isFunction(p)
+}
+
+function isFunction(obj: any) {
   return !!(obj && obj.constructor && obj.call && obj.apply);
 };
 
