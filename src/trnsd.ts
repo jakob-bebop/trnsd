@@ -6,16 +6,15 @@ import compose from './compose'
 
 declare var console;
 
-export type NowOrLater<X> = X | Promise<X>
-export type Reducer<A, X> = (a: A, x: X) => NowOrLater<A>
-export type Transform<X, Y> = (x: X) => Y
-export type Predicate<X> = (x: X) => boolean | Promise<boolean>
-
-export type Transducer<A, X, Y> =
-  (r: Reducer<NowOrLater<A>, NowOrLater<Y>>) => Reducer<A, X>
+export type Eventually<X> = X | Promise<X>
+export type Transform<X, Y> = (x: X) => Eventually<Y>
+export type Predicate<X> = (x: X) => Eventually<boolean>
+export type Reducer<A, X> = (a: A, x: X) => Eventually<A>
+export type AsyncReducer<A, X> = (a: A, x: Eventually<X>) => Eventually<A>
+export type Transducer<A, X, Y> = (r: AsyncReducer<A, Y>) => Reducer<A, X>
 
 export function map<A, X, Y>(f: Transform<X, Y>): Transducer<A, X, Y> {
-  return (r: Reducer<A, Y>) => (a: A, x: X) => r(a, f(x))
+  return r => (a: A, x: X) => r(a, f(x))
 }
 
 export function filter<A, X>(f: Predicate<X>): Transducer<A, X, X> {
