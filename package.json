@@ -2,10 +2,10 @@
   "name": "trnsd",
   "version": "1.1.0",
   "description": "Map and filter that handle async functions, sequentially or in parallel.",
-  "main": "trnsd.js",
+  "main": "lib/trnsd.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src --presets babel-preset-es2015 --out-dir .",
+    "build": "tsc",
     "prepare": "npm run build"
   },
   "repository": {
@@ -25,9 +25,5 @@
   "bugs": {
     "url": "https://github.com/jakob-bebop/trnsd/issues"
   },
-  "homepage": "https://jakob-bebop.github.com/trnsd",
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1"
-  }
+  "homepage": "https://jakob-bebop.github.com/trnsd"
 }
