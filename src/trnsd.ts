@@ -1,15 +1,25 @@
 import compose from './compose'
+//
+// interface PromiseConstructor {
+//   all<T>(values: PromiseLike<T>[]): Promise<[T]>;
+// }
 
-type Reducer<C, B> = (c: C, b: B) => C
-type Transform<A, B> = (a: A) => B
-type Predicate<A> = (a: A) => boolean | Promise<boolean>
+declare var console;
 
-export function map<A, B, C>(f: Transform<A, B>){
-  return (r: Reducer<C, B>) => (a: C, x: A) => r(a, f(x))
+type NowOrLater<X> = X | Promise<X>
+type Reducer<A, X> = (a: A, x: X) => NowOrLater<A>
+type Transform<X, Y> = (x: X) => Y
+type Predicate<X> = (x: X) => boolean | Promise<boolean>
+
+type Transducer<A, X, Y> =
+  (r: Reducer<NowOrLater<A>, NowOrLater<Y>>) => Reducer<A, X>
+
+export function map<A, X, Y>(f: Transform<X, Y>): Transducer<A, X, Y> {
+  return (r: Reducer<A, Y>) => (a: A, x: X) => r(a, f(x))
 }
 
-export function filter<C, A>(f: Predicate<A>){
-  return (r: Reducer<C, A>) => (a: C, x: A) => {
+export function filter<A, X>(f: Predicate<X>): Transducer<A, X, X> {
+  return (r: Reducer<A, X>) => (a: A, x: X) => {
     const b = f(x);
     if (isPromise(b))
       return b.then(b => b? r(a, x): a);
@@ -35,9 +45,41 @@ const trnsd = (xs, a, r, ...fs) => xs.reduce(compose(...fs, r), a)
 , trnsd_async = (xs, a, r, ...fs) => trnsd(
     xs, a, tx_async(r), tx_async, ...interleave(fs, tx_async)
   )
-, tr_async = (xs, ...fs) => trnsd_async(xs, [], r_array, ...fs)
 
-, trnsd_par = (xs, a, r, ...fs) => {
+export function tr_async<X, Y>(
+  xs: X[], f1: Transducer<any, X, Y>
+): Promise<Y[]>;
+export function tr_async<X, X1, Y>(
+  xs: X[],
+  f1: Transducer<any, X, X1>,
+  f2: Transducer<any, X1, Y>
+): Promise<Y[]>;
+export function tr_async<X, X1, X2, Y>(
+  xs: X[],
+  f1: Transducer<any, X, X1>,
+  f2: Transducer<any, X1, X2>,
+  f3: Transducer<any, X2, Y>
+): Promise<Y[]>;
+export function tr_async<X, X1, X2, X3, Y>(
+  xs: X[],
+  f1: Transducer<any, X, X1>,
+  f2: Transducer<any, X1, X2>,
+  f3: Transducer<any, X2, X3>,
+  f4: Transducer<any, X3, Y>
+): Promise<Y[]>;
+export function tr_async<X, A1, A2, A3, A4, Y>(
+  xs: X[],
+  f1: Transducer<any, X, A1>,
+  f2: Transducer<any, A1, A2>,
+  f3: Transducer<any, A2, A3>,
+  f4: Transducer<any, A3, A4>,
+  f5: Transducer<any, A4, Y>
+): Promise<Y[]>;
+export function tr_async(xs: any[], ...fs: any[]) {
+  return trnsd_async(xs, [], r_array, ...fs)
+}
+
+const trnsd_par = (xs, a, r, ...fs) => {
     return new Promise(
       (resolve, reject) => {
         let acc = a, too_late = false
@@ -71,9 +113,9 @@ function isFunction(obj: any) {
   return !!(obj && obj.constructor && obj.call && obj.apply);
 };
 
-module.exports = {
-  map, filter,
-  trnsd, tr_array, r_array,
-  trnsd_async, tr_async, tx_async,
-  trnsd_par, tr_par
-}
+// module.exports = {
+//   map, filter,
+//   trnsd, tr_array, r_array,
+//   trnsd_async, tr_async, tx_async,
+//   trnsd_par, tr_par
+// }
