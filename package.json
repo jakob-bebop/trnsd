@@ -2,7 +2,8 @@
   "name": "trnsd",
   "version": "1.1.0",
   "description": "Map and filter that handle async functions, sequentially or in parallel.",
-  "main": "lib/trnsd.js",
+  "main": "lib/src/trnsd.js",
+  "types": "lib/src/trnsd.d.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
