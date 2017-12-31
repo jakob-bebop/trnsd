@@ -1,6 +1,6 @@
 {
   "name": "trnsd",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Map and filter that handle async functions, sequentially or in parallel.",
   "main": "lib/src/trnsd.js",
   "types": "lib/src/trnsd.d.js",
