@@ -78,31 +78,64 @@ export function tr_async(xs: any[], ...fs: any[]) {
   return trnsd_async(xs, [], r_array, ...fs)
 }
 
-const trnsd_par = (xs, a, r, ...fs) => {
-    return new Promise(
-      (resolve, reject) => {
-        let acc = a, too_late = false
-        const reducer = compose(...interleave(fs, tx_intermediate), tx_async, r)
-        , errorHandler = e => {
-          if (too_late) console.log("Swallowed: ", e.message)
-          else {
-            too_late = true;
-            reject(e)
-          }
-        }
 
-        try {
-          for (let x of xs) {
-            acc = reducer(acc, x).catch(errorHandler)
-          }
-          acc.then(resolve)
-        } catch (e) {
-          errorHandler(e)
+export function trnsd_par(xs, a, r, ...fs) {
+  return new Promise(
+    (resolve, reject) => {
+      let acc = a, too_late = false
+      const reducer = compose(...interleave(fs, tx_intermediate), tx_async, r)
+      , errorHandler = e => {
+        if (too_late) console.log("Swallowed: ", e.message)
+        else {
+          too_late = true;
+          reject(e)
         }
       }
-    )
-  }
-, tr_par = (xs, ...fs) => trnsd_par(xs, [], r_array, ...fs)
+
+      try {
+        for (let x of xs) {
+          acc = reducer(acc, x).catch(errorHandler)
+        }
+        acc.then(resolve)
+      } catch (e) {
+        errorHandler(e)
+      }
+    }
+  )
+}
+
+export function tr_par<X, Y>(
+  xs: X[], f1: Transducer<any, X, Y>
+): Promise<Y[]>;
+export function tr_par<X, X1, Y>(
+  xs: X[],
+  f1: Transducer<any, X, X1>,
+  f2: Transducer<any, X1, Y>
+): Promise<Y[]>;
+export function tr_par<X, X1, X2, Y>(
+  xs: X[],
+  f1: Transducer<any, X, X1>,
+  f2: Transducer<any, X1, X2>,
+  f3: Transducer<any, X2, Y>
+): Promise<Y[]>;
+export function tr_par<X, X1, X2, X3, Y>(
+  xs: X[],
+  f1: Transducer<any, X, X1>,
+  f2: Transducer<any, X1, X2>,
+  f3: Transducer<any, X2, X3>,
+  f4: Transducer<any, X3, Y>
+): Promise<Y[]>;
+export function tr_par<X, A1, A2, A3, A4, Y>(
+  xs: X[],
+  f1: Transducer<any, X, A1>,
+  f2: Transducer<any, A1, A2>,
+  f3: Transducer<any, A2, A3>,
+  f4: Transducer<any, A3, A4>,
+  f5: Transducer<any, A4, Y>
+): Promise<Y[]>;
+export function tr_par(xs, ...fs){
+  return trnsd_par(xs, [], r_array, ...fs)
+}
 
 function isPromise<T>(p: any): p is Promise<T> {
   return p && isFunction(p)
