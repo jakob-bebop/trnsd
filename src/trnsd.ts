@@ -1,8 +1,4 @@
 import compose from './compose'
-//
-// interface PromiseConstructor {
-//   all<T>(values: PromiseLike<T>[]): Promise<[T]>;
-// }
 
 declare var console;
 
@@ -26,24 +22,40 @@ export function filter<A, X>(f: Predicate<X>): Transducer<A, X, X> {
       return b? r(a, x): a;
   }
 }
-const trnsd = (xs, a, r, ...fs) => xs.reduce(compose(...fs, r), a)
 
-, r_array = (a, x) => {a.push(x); return a}
-, tr_array = (xs, ...fs) => trnsd(xs, [], r_array, ...fs)
+export function trnsd(xs, a, r, ...fs) {
+  return xs.reduce(compose(...fs, r), a)
+}
+
+function r_array(a, x) {
+  a.push(x)
+  return a
+}
+export function tr_array(xs, ...fs) {
+  return trnsd(xs, [], r_array, ...fs)
+}
 
 
-, tx_intermediate = r => (pa, px) => Promise.resolve(px).then(x => r(pa, x))
-, tx_async = r => (pa, px) => Promise.resolve(pa).then(
+function tx_intermediate(r){
+ return (pa, px) => Promise.resolve(px).then(x => r(pa, x))
+}
+function tx_async(r){
+  return (pa, px) => Promise.resolve(pa).then(
     a => Promise.resolve(px).then(x => r(a, x))
   )
+}
 
-, interleave = (xs, y) => xs.slice(1).reduce(
+function interleave(xs, y){
+  return xs.slice(1).reduce(
     (xyxs, x) => xyxs.concat(y, x), [xs[0]]
   )
+}
 
-, trnsd_async = (xs, a, r, ...fs) => trnsd(
+export function trnsd_async(xs, a, r, ...fs) {
+  return trnsd(
     xs, a, tx_async(r), tx_async, ...interleave(fs, tx_async)
   )
+}
 
 export function tr_async<X, Y>(
   xs: X[], f1: Transducer<any, X, Y>
