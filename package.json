@@ -15,8 +15,7 @@
   },
   "keywords": [
     "transducers",
-    "functional",
-    "programming",
+    "functional programming",
     "map",
     "filter",
     "promise"
