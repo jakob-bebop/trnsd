@@ -23,6 +23,17 @@ export function filter<A, X>(f: Predicate<X>): Transducer<A, X, X> {
   }
 }
 
+export function flatten<A, X>(): Transducer<A, X[], X> {
+  return (r: AsyncReducer<A, X>) => {
+    return (a: A, xs: X[]) => {
+      let nextA = Promise.resolve(a)
+      for (let x of xs) nextA = nextA.then(a => r(a, x))
+      return nextA;
+    }
+  } 
+}
+
+
 export function trnsd(xs, a, r, ...fs) {
   return xs.reduce(compose(...fs, r), a)
 }
