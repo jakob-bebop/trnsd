@@ -30,7 +30,7 @@ export function flatten<A, X>(): Transducer<A, X[], X> {
       for (let x of xs) nextA = nextA.then(a => r(a, x))
       return nextA;
     }
-  } 
+  }
 }
 
 
@@ -119,7 +119,7 @@ export function trnsd_par(xs, a, r, ...fs) {
         for (let x of xs) {
           acc = reducer(acc, x).catch(errorHandler)
         }
-        acc.then(resolve)
+        Promise.resolve(acc).then(resolve)
       } catch (e) {
         errorHandler(e)
       }
