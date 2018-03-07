@@ -17,19 +17,19 @@ tr_async(numbers,
 
 
 tr_async(
-  
+
   numbers,
-         
-  map(x => {
-    console.log(`Processing ${x}`)
+
+  map((x, i) => {
+    console.log(`Processing ${x}@${i}`)
     return wait(1000).then(() => x * 100)
   }),
-  
+
   filter(x => {
     console.log(`Filtering ${x}`)
     return x < 500}
   )
-  
+
 )
 .then(console.log)
 /*
@@ -53,4 +53,3 @@ tr_async(
   Filtering 1000
   [ 100, 200, 400 ]
 */
-
