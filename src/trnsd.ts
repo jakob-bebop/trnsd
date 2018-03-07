@@ -3,14 +3,17 @@ import compose from './compose'
 declare var console;
 
 export type Eventually<X> = X | Promise<X>
-export type Transform<X, Y> = (x: X) => Eventually<Y>
+export type Transform<X, Y> = (x: X, i?: number) => Eventually<Y>
 export type Predicate<X> = (x: X) => Eventually<boolean>
 export type Reducer<A, X> = (a: A, x: X) => Eventually<A>
 export type AsyncReducer<A, X> = (a: A, x: Eventually<X>) => Eventually<A>
 export type Transducer<A, X, Y> = (r: AsyncReducer<A, Y>) => Reducer<A, X>
 
 export function map<A, X, Y>(f: Transform<X, Y>): Transducer<A, X, Y> {
-  return r => (a: A, x: X) => r(a, f(x))
+  return r => {
+    let i = 0
+    return (a: A, x: X) => r(a, f(x, i++))
+  }
 }
 
 export function filter<A, X>(f: Predicate<X>): Transducer<A, X, X> {
