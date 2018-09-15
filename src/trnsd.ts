@@ -101,23 +101,54 @@ export function tr_async(xs: any[], ...fs: any[]) {
   return trnsd_async(xs, [], r_array, ...fs)
 }
 
-
 export function trnsd_par(xs, a, r, ...fs) {
+  return trnsd_var_par(xs, xs.length, null, a, r, ...fs)
+}
+
+const default_exception_eater = e => {}
+
+export function trnsd_var_par(xs, npar, catcher, a, r, ...fs) {
+  catcher = catcher || default_exception_eater
   return new Promise(
     (resolve, reject) => {
       let acc = a, too_late = false
       const reducer = compose(...interleave(fs, tx_intermediate), tx_async, r)
       , errorHandler = e => {
-        if (too_late) console.log("Swallowed: ", e.message)
+        if (too_late) catcher(e)
         else {
           too_late = true;
           reject(e)
         }
       }
+      
+      const thunks: Function[] = [], 
+      respawn = a => {
+        const f = thunks.shift()
+        if (f && !too_late) {
+          f()
+        }
+        return a
+      },
+      spawn = (acc, x) => {
+        if (npar-- > 0) {
+          return reducer(acc, x).then(respawn)
+        }
+        else {
+          return new Promise((resolve, reject) =>
+            thunks.push(() => 
+              reducer(acc, x)
+              .then(respawn)
+              .then(resolve)
+              .catch(reject)
+            )
+          )
+        }
+      }
 
       try {
         for (let x of xs) {
-          acc = reducer(acc, x).catch(errorHandler)
+          acc = spawn(acc, x)
+            .catch(errorHandler)
         }
         Promise.resolve(acc).then(resolve)
       } catch (e) {
@@ -161,7 +192,7 @@ export function tr_par(xs, ...fs){
 }
 
 function isPromise<T>(p: any): p is Promise<T> {
-  return p && isFunction(p)
+  return p && isFunction(p.then)
 }
 
 function isFunction(obj: any) {
