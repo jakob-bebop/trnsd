@@ -1,4 +1,4 @@
-const { trnsd, trnsd_async, map, filter } = require('trnsd')
+const { trnsd, asyn, map, filter } = require('./trnsd_import')
 const { wait } = require('./wait')
 , numbers = [1, 2, 4, 5, 6, 7, 8, 9, 10]
 
@@ -20,9 +20,12 @@ const result = trnsd(numbers,
 console.log(result) // Set { 51, 101, 201, 251, 1 }
 
 // Another, asynchronous, example:
-trnsd_async(numbers,
+asyn(
   'Random numbers:',
-  (a, x) => a + ' ' + x,
+  (a, x) => a + ' ' + x
+)
+.input(numbers)
+.pipe(
   map(x => wait(x*100)
     .then(() => Math.floor(Math.random()*10))
   )

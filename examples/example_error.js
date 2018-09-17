@@ -1,4 +1,4 @@
-const { tr_async, tr_par, trnsd_var_par, map, filter } = require('./trnsd_import')
+const { tr_async, tr_par, par, map, filter } = require('./trnsd_import')
 const { wait } = require('./wait')
 
 async function example() {
@@ -37,9 +37,12 @@ async function example() {
   
   numbers = [1, 2, 4, 5, 6, 7, 8, 9, 10]
   try {
-    y = await trnsd_var_par(
-      numbers, 3, custom_handler, 
-      [], (a, x) => {a.push(x); return a},
+    y = await par(
+      {maxParallel: 3, lateErrorHandler: custom_handler}, 
+      [], (a, x) => {a.push(x); return a}
+    )
+    .input(numbers)
+    .pipe(
       map(x => {
         console.log(`Processing ${x}`)
         return wait(1000).then(() => x * 100)
