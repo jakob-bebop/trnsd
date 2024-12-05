@@ -3,8 +3,8 @@
   "version": "1.3.0",
   "type": "module",
   "description": "Map and filter that handle async functions, sequentially or in parallel.",
-  "main": "lib/src/trnsd.js",
-  "types": "lib/src/trnsd.d.js",
+  "main": "lib/trnsd.js",
+  "types": "lib/trnsd.d.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
